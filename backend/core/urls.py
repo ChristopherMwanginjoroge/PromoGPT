@@ -22,6 +22,6 @@ urlpatterns = [
     path('users/',include('users.urls')),
     # path("business_data/", include("intelligence.urls")),
 
-    # path("intelligence/", include("intelligence.urls")),
+    path("intelligence/", include("intelligence.urls")),
 
 ]

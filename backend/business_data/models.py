@@ -53,7 +53,7 @@ class RawSalesRecord(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
 
-class SalesRecord(models.Model):
+class SalesData(models.Model):
     business = models.ForeignKey(Business, on_delete=models.CASCADE, related_name="sales")
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     date = models.DateField()
