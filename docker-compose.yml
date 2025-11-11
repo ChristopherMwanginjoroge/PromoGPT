@@ -1,10 +1,48 @@
+# services:
+#   web:
+#     build: .
+#     command: sh -c "chmod +x /code/entrypoint.sh && /code/entrypoint.sh python manage.py runserver 0.0.0.0:8000"
+#     volumes:
+#       - .:/code
+#       - static_volume:/code/staticfiles
+#     env_file:
+#       - .env
+#     depends_on:
+#       - db
+#       - redis
+#     ports:
+#       - "8000:8000"
+
+#   redis:
+#     image: redis:7
+#     ports:
+#       - "6379:6379"
+
+#   db:
+#     image: postgres:15
+#     environment:
+#       POSTGRES_DB: ${POSTGRES_DB:-promogpt}
+#       POSTGRES_USER: ${POSTGRES_USER:-postgres}
+#       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+#     ports:
+#       - "5432:5432"
+#     volumes:
+#       - pgdata:/var/lib/postgresql/data/
+
+# volumes:
+#   pgdata:
+#   static_volume:
+
+# version: '3.8'
+
 services:
   web:
-    build: .
-    command: sh -c "chmod +x /code/entrypoint.sh && /code/entrypoint.sh python manage.py runserver 0.0.0.0:8000"
+    build: 
+       context: ./backend
+    command: sh -c "chmod +x /backend/entrypoint.sh && /backend/entrypoint.sh python manage.py runserver 0.0.0.0:8000"
     volumes:
-      - .:/code
-      - static_volume:/code/staticfiles
+      - .:/backend
+      - static_volume:/backend/staticfiles
     env_file:
       - .env
     depends_on:
@@ -12,11 +50,32 @@ services:
       - redis
     ports:
       - "8000:8000"
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./promogpt-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./promogpt-frontend:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - VITE_APP_API_URL=http://web:8000
+    depends_on:
+      - web
+    networks:
+      - app-network
 
   redis:
     image: redis:7
     ports:
       - "6379:6379"
+    networks:
+      - app-network
 
   db:
     image: postgres:15
@@ -28,6 +87,12 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data/
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
   pgdata:
