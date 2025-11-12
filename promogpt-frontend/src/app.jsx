@@ -1,3 +1,4 @@
+// 
 // src/App.jsx
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
@@ -13,9 +14,18 @@ import CreateContent from "./pages/dashboard/CreateContent";
 import SavedPosts from "./pages/dashboard/SavedPosts";
 import BusinessProfile from "./pages/dashboard/BusinessProfile";
 
-// protect logged-in pages
+// Protect with loading state
 function PrivateRoute({ children }) {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
   return user ? children : <Navigate to="/login" replace />;
 }
 
@@ -24,13 +34,12 @@ export default function App() {
     <AuthProvider>
       <Router>
         <Routes>
-          
-          {/* Public Routes */}
+          {/* Public */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
 
-          {/* Protected Dashboard */}
+          {/* Protected */}
           <Route
             path="/dashboard/*"
             element={
@@ -45,9 +54,8 @@ export default function App() {
             <Route path="profile" element={<BusinessProfile />} />
           </Route>
 
-          {/* Fallback → Home */}
+          {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
-
         </Routes>
       </Router>
     </AuthProvider>
