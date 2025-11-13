@@ -1,26 +1,34 @@
 import React from "react";
-import { SimpleGrid, VStack, Text, Button, Image } from "@chakra-ui/react";
-import DashboardLayout from "../layouts/DashboardLayout";
 
-export default function Products() {
-  const products = [
-    { id: 1, name: "Leather Wallet", price: "KES 1,800", image: "https://via.placeholder.com/150" },
-    { id: 2, name: "Perfume Set", price: "KES 3,200", image: "https://via.placeholder.com/150" },
-    { id: 3, name: "Sneakers", price: "KES 5,500", image: "https://via.placeholder.com/150" },
+export default function Products(){
+  const items = [
+    {id:1, title:"Glow Kit", price:"Ksh 1,200"},
+    {id:2, title:"Scented Candle", price:"Ksh 850"},
+    {id:3, title:"Leather Bag", price:"Ksh 5,900"},
   ];
-
   return (
-    <DashboardLayout title="Products">
-      <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
-        {products.map((p) => (
-          <VStack key={p.id} bg="white" p={4} borderRadius="md" shadow="md">
-            <Image src={p.image} borderRadius="md" />
-            <Text fontWeight="600">{p.name}</Text>
-            <Text color="brand.purple">{p.price}</Text>
-            <Button colorScheme="gold">Edit</Button>
-          </VStack>
+    <div className="page">
+      <div className="page-header">
+        <div>
+          <div className="page-title">Products</div>
+          <div className="page-sub">Your store items (manual / synced)</div>
+        </div>
+        <div><button className="btn">+ Add Product</button></div>
+      </div>
+
+      <div className="product-grid">
+        {items.map(it=>(
+          <div key={it.id} className="card">
+            <div style={{height:120, borderRadius:10, background:'linear-gradient(90deg,#fff,#f7f0ff)'}} />
+            <div style={{marginTop:10, fontWeight:700}}>{it.title}</div>
+            <div style={{color:'var(--muted)'}}>{it.price}</div>
+            <div style={{marginTop:10, display:'flex', gap:8}}>
+              <button className="btn-outline">Edit</button>
+              <button className="btn-outline">Sync</button>
+            </div>
+          </div>
         ))}
-      </SimpleGrid>
-    </DashboardLayout>
+      </div>
+    </div>
   );
 }

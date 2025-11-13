@@ -1,19 +1,14 @@
-// src/pages/Demo.jsx
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import BrandMark from "../components/BrandMark";
 
-export default function Demo() {
-  const navigate = useNavigate();
+export default function Demo(){
   return (
-    <div className="page page--gradient page--centered">
-      <div className="demo-card">
-        <BrandMark size="lg" />
-        <h2>Dashboard demo</h2>
-        <p>Explore how the dashboard looks and works with sample data.</p>
-        <div className="demo-card__actions">
-          <button className="btn btn--primary" onClick={() => navigate("/signup")}>Create a free account</button>
-          <button className="btn btn--ghost" onClick={() => navigate("/login")}>I already have access</button>
+    <div className="page">
+      <div className="page-title">Live Demo</div>
+      <div className="card">
+        <div style={{fontWeight:700}}>Try a ready demo</div>
+        <p style={{color:'var(--muted)'}}>Generate a sample promo for "Glow Kit" with one click</p>
+        <div style={{marginTop:10}}>
+          <button className="btn" onClick={()=>alert('Generated sample (demo)')}>Generate sample</button>
         </div>
       </div>
     </div>

@@ -1,24 +1,35 @@
 import React, { useState } from "react";
-import { Box, Input, Select, Textarea, Button, Heading, VStack } from "@chakra-ui/react";
-import DashboardLayout from "../layouts/DashboardLayout";
 
-export default function Campaign() {
-  const [form, setForm] = useState({ name: "", goal: "", audience: "", details: "" });
+export default function Campaigns(){
+  const [campaigns] = useState([
+    {id:1, name:'Summer Glow', goal:'sales', status:'active', created:'2025-10-01'},
+    {id:2, name:'Holiday Launch', goal:'awareness', status:'paused', created:'2025-09-15'},
+  ]);
 
   return (
-    <DashboardLayout title="Create Campaign">
-      <VStack spacing={4} align="stretch">
-        <Heading size="md" color="brand.purple">New Campaign</Heading>
-        <Input placeholder="Campaign Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}/>
-        <Select placeholder="Select Goal" value={form.goal} onChange={(e) => setForm({ ...form, goal: e.target.value })}>
-          <option>Brand Awareness</option>
-          <option>Engagement</option>
-          <option>Lead Generation</option>
-        </Select>
-        <Input placeholder="Target Audience" value={form.audience} onChange={(e) => setForm({ ...form, audience: e.target.value })}/>
-        <Textarea placeholder="Campaign Details..." value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })}/>
-        <Button colorScheme="purple">Generate AI Promo Content</Button>
-      </VStack>
-    </DashboardLayout>
+    <div className="page">
+      <div className="page-header">
+        <div>
+          <div className="page-title">Campaigns</div>
+          <div className="page-sub">Create, duplicate and analyze your campaigns</div>
+        </div>
+        <div><button className="btn">+ New campaign</button></div>
+      </div>
+
+      <div style={{display:'grid', gap:12}}>
+        {campaigns.map(c=>(
+          <div key={c.id} className="card" style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+            <div>
+              <div style={{fontWeight:700}}>{c.name}</div>
+              <div style={{color:'var(--muted)', fontSize:13}}>{c.goal} • created {c.created}</div>
+            </div>
+            <div style={{display:'flex', gap:8}}>
+              <button className="btn-outline">{c.status}</button>
+              <button className="btn">Open</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

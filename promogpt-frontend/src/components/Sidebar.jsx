@@ -1,106 +1,56 @@
-import React from "react";
-import {
-  Box,
-  VStack,
-  IconButton,
-  Tooltip,
-  useColorModeValue,
-  Text,
-  HStack,
-} from "@chakra-ui/react";
-import { NavLink, useLocation } from "react-router-dom";
-import {
-  FiHome,
-  FiBarChart2,
-  FiPackage,
-  FiBook,
-  FiCpu,
-  FiUser,
-  FiHelpCircle,
-} from "react-icons/fi";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { FiHome, FiPieChart, FiBox, FiBook, FiCpu, FiUser, FiHelpCircle } from "react-icons/fi";
+import "../index.css";
 
-export default function Sidebar() {
+export default function Sidebar(){
+  const [expanded, setExpanded] = useState(false);
   const location = useLocation();
 
-  // Sidebar items
-  const navItems = [
-    { label: "Dashboard", icon: FiHome, path: "/dashboard" },
-    { label: "Campaigns", icon: FiBarChart2, path: "/campaigns" },
-    { label: "Products", icon: FiPackage, path: "/products" },
-    { label: "Ledger", icon: FiBook, path: "/ledger" },
-    { label: "Generator", icon: FiCpu, path: "/generator" },
-    { label: "Profile", icon: FiUser, path: "/profile" },
-    { label: "Support", icon: FiHelpCircle, path: "/support" },
+  useEffect(()=> {
+    const el = document.querySelector('.sidebar-container');
+    if (expanded) el?.classList.add('expanded'); else el?.classList.remove('expanded');
+  }, [expanded]);
+
+  const items = [
+    { icon: <FiHome/>, label: "Dashboard", path: "/dashboard" },
+    { icon: <FiPieChart/>, label: "Campaigns", path: "/campaigns" },
+    { icon: <FiBox/>, label: "Products", path: "/products" },
+    { icon: <FiBook/>, label: "Ledger", path: "/ledger" },
+    { icon: <FiCpu/>, label: "Generator", path: "/generator" },
+    { icon: <FiUser/>, label: "Business Profile", path: "/business-profile" },
+    { icon: <FiHelpCircle/>, label: "Support", path: "/support" },
   ];
 
-  const sidebarBg = useColorModeValue("purple.700", "purple.900");
-  const activeBg = useColorModeValue("gold.400", "yellow.500");
-  const iconColor = useColorModeValue("white", "gray.100");
-
   return (
-    <Box
-      as="nav"
-      bg={sidebarBg}
-      color={iconColor}
-      h="100vh"
-      w={{ base: "70px", md: "80px" }}
-      position="fixed"
-      left="0"
-      top="0"
-      display="flex"
-      flexDir="column"
-      justifyContent="space-between"
-      boxShadow="xl"
-      zIndex="10"
-      _hover={{ w: "220px", transition: "0.3s ease" }}
+    <aside
+      className={`sidebar-container`}
+      onMouseEnter={() => setExpanded(true)}
+      onMouseLeave={() => setExpanded(false)}
     >
-      <VStack spacing={4} mt={6} align="stretch" px={3}>
-        {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
-          return (
-            <Tooltip
-              label={item.label}
-              placement="right"
-              hasArrow
-              bg="gold.400"
-              color="black"
-              key={item.path}
-            >
-              <NavLink to={item.path}>
-                <HStack
-                  spacing={3}
-                  p={3}
-                  borderRadius="md"
-                  bg={isActive ? activeBg : "transparent"}
-                  _hover={{ bg: "purple.600" }}
-                  transition="0.2s ease"
-                >
-                  <IconButton
-                    icon={<item.icon size={20} />}
-                    variant="ghost"
-                    colorScheme="whiteAlpha"
-                    aria-label={item.label}
-                    _hover={{ bg: "transparent" }}
-                  />
-                  <Text
-                    fontWeight={isActive ? "bold" : "medium"}
-                    color={isActive ? "black" : "white"}
-                    display={{ base: "none", md: "block" }}
-                  >
-                    {item.label}
-                  </Text>
-                </HStack>
-              </NavLink>
-            </Tooltip>
-          );
-        })}
-      </VStack>
+      <div>
+        <div className="sidebar-header">
+          <div className="sidebar-logo">PG</div>
+          {expanded && <div className="sidebar-title">PromoGPT</div>}
+        </div>
 
-      <Box textAlign="center" pb={4}>
-        <Text fontSize="xs" color="gray.200">
-          © 2025 PromoGPT
-        </Text>
-      </Box>
-    </Box>
+        <nav className="sidebar-menu">
+          {items.map(it => (
+            <Link
+              to={it.path}
+              key={it.path}
+              className={`menu-item ${location.pathname === it.path ? 'active' : ''}`}
+            >
+              <div className="icon">{it.icon}</div>
+              {expanded && <div style={{fontWeight:600}}>{it.label}</div>}
+            </Link>
+          ))}
+        </nav>
+      </div>
+
+      <div className="sidebar-footer card">
+        <div style={{fontSize:12, color:"rgba(255,255,255,0.9)"}}>v1.0 • PromoGPT</div>
+      </div>
+    </aside>
   );
 }

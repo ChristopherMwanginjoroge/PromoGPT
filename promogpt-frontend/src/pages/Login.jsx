@@ -1,39 +1,53 @@
 import React, { useState } from "react";
-import { Box, Input, Button, Heading, VStack, Text } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
-import api from "../api";
-import { useAuth } from "../contexts/AuthContext";
+import { useNavigate, Link } from "react-router-dom";
+import { loginUser } from "../api";
+import "./Auth.css";
 
 export default function Login() {
-  const { login } = useAuth();
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
     try {
-      const res = await api.post("/users/login/", form);
-      const user = res.data.user || res.data;
-      const access = res.data.access || res.data.token;
-      login(user, access);
+      await loginUser({ email, password });
       navigate("/dashboard");
-    } catch {
-      setError("Invalid credentials. Please try again.");
+    } catch (err) {
+      setError(err.error || "Login failed");
     }
   };
 
   return (
-    <Box display="flex" alignItems="center" justifyContent="center" minH="100vh" bg="gray.50">
-      <VStack spacing={4} p={8} bg="white" borderRadius="md" shadow="md" w="sm">
-        <Heading color="brand.purple">Login</Heading>
-        {error && <Text color="red.500">{error}</Text>}
-        <Input placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}/>
-        <Input placeholder="Password" type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })}/>
-        <Button colorScheme="purple" w="full" onClick={handleSubmit}>Login</Button>
-        <Text fontSize="sm">Don’t have an account? <Button variant="link" onClick={() => navigate("/signup")}>Sign up</Button></Text>
-      </VStack>
-    </Box>
+    <div className="auth-page">
+      <div className="auth-card">
+        <h2>Welcome Back 👋</h2>
+        <p>Login to your PromoGPT account</p>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="email"
+            placeholder="Email Address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          {error && <div className="alert">{error}</div>}
+          <button type="submit">Login</button>
+        </form>
+        <p className="switch">
+          Don’t have an account? <Link to="/signup">Sign up</Link>
+        </p>
+      </div>
+    </div>
   );
 }
-
+  

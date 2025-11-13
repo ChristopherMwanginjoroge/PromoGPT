@@ -61,43 +61,72 @@
 
 // src/pages/Signup.jsx
 import React, { useState } from "react";
-import { Box, Input, Button, Heading, VStack, Text } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
-import api from "../api";
-import { useAuth } from "../contexts/AuthContext";
+import { useNavigate, Link } from "react-router-dom";
+import { registerUser } from "../api";
+import "./Auth.css";
 
 export default function Signup() {
-  const { login } = useAuth();
-  const [form, setForm] = useState({ first_name: "", last_name: "", email: "", password: "", phone: "" });
-  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [form, setForm] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
+
+  const handleChange = (k, v) => setForm({ ...form, [k]: v });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
     try {
-      const res = await api.post("/users/register/", form);
-      const user = res.data.user || res.data;
-      const access = res.data.access || res.data.token;
-      login(user, access);
-      navigate("/dashboard");
-    } catch {
-      setError("Registration failed. Please try again.");
+      await registerUser(form);
+      navigate("/login");
+    } catch (err) {
+      setError(err.error || "Signup failed");
     }
   };
 
   return (
-    <Box display="flex" alignItems="center" justifyContent="center" minH="100vh" bg="gray.50">
-      <VStack spacing={4} p={8} bg="white" borderRadius="md" shadow="md" w="sm">
-        <Heading color="brand.purple">Sign Up</Heading>
-        {error && <Text color="red.500">{error}</Text>}
-        <Input placeholder="First Name" value={form.first_name} onChange={(e) => setForm({ ...form, first_name: e.target.value })}/>
-        <Input placeholder="Last Name" value={form.last_name} onChange={(e) => setForm({ ...form, last_name: e.target.value })}/>
-        <Input placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}/>
-        <Input placeholder="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}/>
-        <Input placeholder="Password" type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })}/>
-        <Button colorScheme="purple" w="full" onClick={handleSubmit}>Sign Up</Button>
-        <Text fontSize="sm">Already have an account? <Button variant="link" onClick={() => navigate("/login")}>Login</Button></Text>
-      </VStack>
-    </Box>
+    <div className="auth-page">
+      <div className="auth-card">
+        <h2>Create Account ✨</h2>
+        <p>Join PromoGPT and grow your business with AI</p>
+        <form onSubmit={handleSubmit}>
+          <input
+            placeholder="First Name"
+            value={form.first_name}
+            onChange={(e) => handleChange("first_name", e.target.value)}
+            required
+          />
+          <input
+            placeholder="Last Name"
+            value={form.last_name}
+            onChange={(e) => handleChange("last_name", e.target.value)}
+            required
+          />
+          <input
+            type="email"
+            placeholder="Email Address"
+            value={form.email}
+            onChange={(e) => handleChange("email", e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={(e) => handleChange("password", e.target.value)}
+            required
+          />
+          {error && <div className="alert">{error}</div>}
+          <button type="submit">Sign Up</button>
+        </form>
+        <p className="switch">
+          Already have an account? <Link to="/login">Login</Link>
+        </p>
+      </div>
+    </div>
   );
 }

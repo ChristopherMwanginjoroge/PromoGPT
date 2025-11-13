@@ -1,89 +1,69 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Textarea,
-  Button,
-  VStack,
-  Heading,
-  Text,
-  Spinner,
-  Input,
-  HStack,
-} from "@chakra-ui/react";
-import DashboardLayout from "../layouts/DashboardLayout";
-import api from "../api";
+import { generatePromoContent } from "../api";
 
-export default function Generator() {
+const handleGenerate = async () => {
+  setLoading(true);
+  try {
+    const res = await generatePromoContent({ prompt, file });
+    setResult(res.output || res.generated_text);
+  } catch (err) {
+    setError(err.error || "Error generating content");
+  } finally {
+    setLoading(false);
+  }
+};
+
+export default function Generator(){
   const [prompt, setPrompt] = useState("");
   const [file, setFile] = useState(null);
-  const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
+  const [outputs, setOutputs] = useState([]);
 
-  const handleGenerate = async () => {
-    if (!prompt && !file) return;
+  async function handleGenerate(){
+    if(!prompt.trim() && !file) return alert('Add a prompt or upload a file');
     setLoading(true);
-    setResult("");
-
-    try {
-      const formData = new FormData();
-      formData.append("prompt", prompt);
-      if (file) formData.append("file", file);
-
-      const res = await api.post("/ai/generate/", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      setResult(res.data.output || res.data.generated_text || "No response");
-    } catch (error) {
-      console.error(error);
-      setResult("⚠️ Failed to generate promo content. Try again.");
-    } finally {
+    // Demo: fake network
+    setTimeout(()=> {
+      setOutputs([
+        `Promo 1 for "${prompt}" — Short & punchy: Drive urgency.`,
+        `Promo 2 for "${prompt}" — Story-led caption for socials.`,
+        `Promo 3 for "${prompt}" — CTA-focused copy for ads.`,
+      ]);
       setLoading(false);
-    }
-  };
+    }, 900);
+  }
 
   return (
-    <DashboardLayout title="AI Promo Content Generator">
-      <VStack spacing={6} align="stretch">
-        <Heading size="md" color="brand.purple">
-          Generate Promotional Content
-        </Heading>
+    <div className="page">
+      <div className="page-header">
+        <div>
+          <div className="page-title">AI Promo Generator</div>
+          <div className="page-sub">Describe your campaign and press Generate.</div>
+        </div>
+        <div><small style={{color:'var(--muted)'}}>Demo mode</small></div>
+      </div>
 
-        <Textarea
-          placeholder="Describe your product, campaign goal, or target audience..."
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          size="md"
-          minH="150px"
-        />
+      <div className="card">
+        <textarea className="prompt-box" placeholder="E.g. New handmade soap kit, target: women 25-44, tone: friendly" value={prompt} onChange={e=>setPrompt(e.target.value)}></textarea>
+        <div style={{display:'flex', gap:10, marginTop:12}}>
+          <input type="file" onChange={e=>setFile(e.target.files[0])} />
+          <button className="btn" onClick={handleGenerate} disabled={loading}>{loading ? 'Generating...' : 'Generate'}</button>
+          <button className="btn-outline" onClick={()=>{setPrompt(''); setFile(null); setOutputs([])}}>Reset</button>
+        </div>
+      </div>
 
-        <HStack>
-          <Input
-            type="file"
-            accept="image/*,.pdf"
-            onChange={(e) => setFile(e.target.files[0])}
-          />
-          <Button
-            onClick={handleGenerate}
-            colorScheme="purple"
-            isLoading={loading}
-          >
-            Generate
-          </Button>
-        </HStack>
-
-        <Box mt={6} p={4} bg="white" borderRadius="md" shadow="md" minH="200px">
-          {loading ? (
-            <Spinner color="purple.500" size="lg" />
-          ) : result ? (
-            <Text whiteSpace="pre-wrap">{result}</Text>
-          ) : (
-            <Text color="gray.400">
-              Your generated promo content will appear here ✨
-            </Text>
-          )}
-        </Box>
-      </VStack>
-    </DashboardLayout>
+      <div style={{marginTop:12}}>
+        {outputs.map((o,i)=>(
+          <div key={i} className="card" style={{marginBottom:10}}>
+            <div style={{fontWeight:700}}>Result {i+1}</div>
+            <div style={{marginTop:8}} className="result-card">{o}</div>
+            <div style={{marginTop:10, display:'flex', gap:8}}>
+              <button className="btn-outline" onClick={()=>navigator.clipboard?.writeText(o)}>Copy</button>
+              <button className="btn-outline" onClick={()=>alert('Saved (demo)')}>Save</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
