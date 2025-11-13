@@ -1,25 +1,16 @@
-// src/layouts/DashboardLayout.jsx
-import React, { useState } from "react";
-import { Outlet } from "react-router-dom";
+import React from "react";
+import { Box } from "@chakra-ui/react";
 import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
 
-export default function DashboardLayout() {
-  const [collapsed, setCollapsed] = useState(false);
-
+export default function DashboardLayout({ title, children }) {
   return (
-    <div className="dashboard">
-      <Sidebar collapsed={collapsed} onToggle={() => setCollapsed((c) => !c)} />
-
-      <div className={`dashboard__content ${collapsed ? "expanded" : ""}`}>
-        <div className="dashboard__topbar">
-          <h3>Workspace</h3>
-        </div>
-
-        <main className="dashboard__main">
-          {/* Nested routes render here */}
-          <Outlet />
-        </main>
-      </div>
-    </div>
+    <Box display="flex" minH="100vh" bg="gray.50">
+      <Sidebar />
+      <Box flex="1" ml={{ base: "70px", md: "220px" }}>
+        <Navbar title={title} />
+        <Box p={6}>{children}</Box>
+      </Box>
+    </Box>
   );
 }
