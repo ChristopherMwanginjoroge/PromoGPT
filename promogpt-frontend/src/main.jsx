@@ -1,37 +1,26 @@
 import React from "react";
-import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-import { ChakraProvider, extendTheme } from "@chakra-ui/react";
-import { AuthProvider } from "./contexts/AuthContext";
+import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
+import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import "./index.css";
 
-// Custom theme
+// Custom theme colors
 const theme = extendTheme({
   colors: {
-    brand: {
-      purple: "#6B46C1",
-      gold: "#FFD700",
+    purple: {
+      700: "#6B46C1",
+      900: "#4C1D95",
     },
-  },
-  styles: {
-    global: {
-      body: {
-        bg: "gray.50",
-        color: "gray.800",
-        fontFamily: "Inter, sans-serif",
-      },
+    gold: {
+      400: "#FFD700",
     },
   },
 });
 
-createRoot(document.getElementById("root")).render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <ChakraProvider theme={theme}>
-        <AuthProvider>
-          <App />
-        </AuthProvider>
-      </ChakraProvider>
-    </BrowserRouter>
+    <ChakraProvider theme={theme}>
+      <App />
+    </ChakraProvider>
   </React.StrictMode>
 );
