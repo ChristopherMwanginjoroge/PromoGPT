@@ -1,0 +1,18 @@
+.saved-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.saved-list {
+  margin-top: 20px;
+}
+
+.saved-card {
+  background: #fff;
+  padding: 16px;
+  border-radius: 6px;
+  margin-bottom: 14px;
+  border: 1px solid #eee;
+  font-size: 15px;
+  white-space: pre-wrap;
+}

@@ -1,43 +1,67 @@
 import React, { useState } from "react";
+import api from "../api";
 
 export default function Ledger(){
-  const [entries, setEntries] = useState([]);
-  const [form, setForm] = useState({product:'', units:'', revenue:''});
+  // keep a flexible rows array for manual entry
+  const [rows, setRows] = useState([{ id: Date.now(), product:'', date:'', qty:'', price:'' }]);
+  const [saving, setSaving] = useState(false);
 
-  function add(){
-    if(!form.product) return alert('Enter product');
-    setEntries(prev=>[{...form, id:Date.now()}, ...prev]);
-    setForm({product:'', units:'', revenue:''});
-  }
+  const addRow = () => setRows(prev => [...prev, { id: Date.now(), product:'', date:'', qty:'', price:'' }]);
+  const updateRow = (id, key, val) => setRows(prev => prev.map(r => r.id===id ? { ...r, [key]: val } : r));
+  const removeRow = (id) => setRows(prev => prev.filter(r => r.id !== id));
+
+  const save = async () => {
+    setSaving(true);
+    try {
+      // send bulk ledger rows to backend
+      await api.post('/ledger/bulk/', { rows });
+      // trigger backend analysis model - endpoint example
+      await api.post('/ai/analyze-ledger/', { rows });
+      alert('Saved and analysis started');
+      setRows([{ id: Date.now(), product:'', date:'', qty:'', price:'' }]);
+    } catch (err) {
+      console.error('Ledger save failed', err);
+      // fallback: store locally if backend fails
+      localStorage.setItem('ledger_backup', JSON.stringify(rows));
+      alert('Save failed; data backed up locally');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
-    <div className="page">
-      <div className="page-header">
-        <div>
-          <div className="page-title">User Ledger</div>
-          <div className="page-sub">Record product & sales data</div>
-        </div>
-      </div>
-
+    <div className="container">
       <div className="card">
-        <div className="form-row">
-          <input className="input" placeholder="Product" value={form.product} onChange={e=>setForm(f=>({...f, product:e.target.value}))} />
-          <input className="input" placeholder="Units sold" value={form.units} onChange={e=>setForm(f=>({...f, units:e.target.value}))} />
-          <input className="input" placeholder="Revenue" value={form.revenue} onChange={e=>setForm(f=>({...f, revenue:e.target.value}))} />
-          <button className="btn" onClick={add}>Add</button>
+        <h2 className="h2">Ledger</h2>
+        <p className="text-muted">Add sales entries manually or paste CSV later.</p>
+
+        <div style={{overflowX:'auto', marginTop:12}}>
+          <table style={{width:'100%', borderCollapse:'collapse'}}>
+            <thead>
+              <tr style={{textAlign:'left', borderBottom:'1px solid #eee'}}>
+                <th>Product</th><th>Date</th><th>Qty</th><th>Price</th><th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map(row => (
+                <tr key={row.id}>
+                  <td style={{padding:8}}><input className="input" value={row.product} onChange={e=>updateRow(row.id,'product',e.target.value)} /></td>
+                  <td style={{padding:8}}><input className="input" type="date" value={row.date} onChange={e=>updateRow(row.id,'date',e.target.value)} /></td>
+                  <td style={{padding:8}}><input className="input" value={row.qty} onChange={e=>updateRow(row.id,'qty',e.target.value)} /></td>
+                  <td style={{padding:8}}><input className="input" value={row.price} onChange={e=>updateRow(row.id,'price',e.target.value)} /></td>
+                  <td style={{padding:8}}>
+                    <button className="btn btn-outline" onClick={()=>removeRow(row.id)}>Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
 
-        <table className="table" style={{marginTop:12}}>
-          <thead>
-            <tr><th>Product</th><th>Units</th><th>Revenue</th></tr>
-          </thead>
-          <tbody>
-            {entries.map(e=>(
-              <tr key={e.id}><td>{e.product}</td><td>{e.units}</td><td>{e.revenue}</td></tr>
-            ))}
-            {entries.length===0 && <tr><td colSpan={3} style={{color:'var(--muted)'}}>No ledger entries yet</td></tr>}
-          </tbody>
-        </table>
+        <div style={{display:'flex', gap:8, marginTop:12}}>
+          <button className="btn btn-primary" onClick={addRow}>Add Row</button>
+          <button className="btn btn-accent" onClick={save} disabled={saving}>{saving ? 'Saving…' : 'Save & Analyze'}</button>
+        </div>
       </div>
     </div>
   );

@@ -1,69 +1,63 @@
 import React from "react";
-import BusinessProfile from "./sections/BusinessProfile";
-import CreateContent from "./sections/CreateContent";
-import SavedPosts from "./sections/SavedPosts";
+import { Link } from "react-router-dom";
+import "./Dashboard.css";
 
-/* lightweight sparkline */
-function Sparkline({ data=[] }){
-  const W=200, H=50, pad=6;
-  const max=Math.max(...data,1), min=Math.min(...data,0);
-  const step = (W - pad*2) / (data.length -1 || 1);
-  const points = data.map((v,i) => {
-    const x = pad + i*step;
-    const y = pad + (1 - (v - min)/(max - min || 1))*(H - pad*2);
-    return `${x},${y}`;
-  }).join(' ');
-  return <svg width={W} height={H}><polyline fill="none" stroke="#6D28D9" strokeWidth="3" points={points} strokeLinecap="round" strokeLinejoin="round" /></svg>;
-}
-
-export default function Dashboard(){
-  const sales = [120,180,140,220,200,260,300];
+const Dashboard = () => {
   return (
-    <div className="page">
-      <div className="page-header">
-        <div>
-          <div className="page-title">Your business at a glance</div>
-          <div className="page-sub">Personalized recommendations and quick actions</div>
-        </div>
-        <div>
-          <button className="btn">+ New Campaign</button>
-        </div>
+    <div className="dashboard-container">
+
+      <h1 className="dashboard-title">Welcome to PromoGPT</h1>
+      <p className="dashboard-subtitle">
+        Your Intelligent Business Assistant — Generate insights, manage products, track data,
+        and boost your brand with AI.
+      </p>
+
+      {/* Quick Actions */}
+      <div className="quick-actions">
+        <Link to="/ledger" className="dash-card">
+          <h3>📘 Ledger</h3>
+          <p>Track product sales, revenue, and daily business activity.</p>
+        </Link>
+
+        <Link to="/products" className="dash-card">
+          <h3>🛍 Products</h3>
+          <p>Manage product listings, pricing, and categories.</p>
+        </Link>
+
+        <Link to="/intelligence" className="dash-card">
+          <h3>🤖 AI Intelligence</h3>
+          <p>Ask AI anything about your business or industry.</p>
+        </Link>
+
+        <Link to="/profile" className="dash-card">
+          <h3>👤 Profile</h3>
+          <p>Update your personal and business information.</p>
+        </Link>
+
+        <Link to="/settings" className="dash-card">
+          <h3>⚙ Settings</h3>
+          <p>Configure branding, preferences, and system settings.</p>
+        </Link>
+
+        <Link to="/demo" className="dash-card">
+          <h3>🎨 Demo Experience</h3>
+          <p>Explore a fully populated AI dashboard example.</p>
+        </Link>
       </div>
 
-      <div className="stats-grid">
-        <div className="stat-card card">
-          <div className="h-stack">
-            <div style={{flex:1}}>
-              <div className="stat-label">Campaigns</div>
-              <div className="stat-value">12</div>
-            </div>
-            <Sparkline data={sales}/>
-          </div>
-        </div>
-
-        <div className="stat-card card">
-          <div className="stat-label">Generated posts</div>
-          <div className="stat-value">320</div>
-          <div style={{marginTop:8}} className="page-sub">Top performing: "Weekend Sale"</div>
-        </div>
-
-        <div className="stat-card card">
-          <div className="stat-label">Average engagement</div>
-          <div className="stat-value">4.3%</div>
-          <div className="page-sub">Last 30 days</div>
-        </div>
-      </div>
-
-      <div style={{marginTop:18}} className="grid-3">
-        <div>
-          <BusinessProfile />
-          <CreateContent />
-        </div>
-
-        <div>
-          <SavedPosts />
-        </div>
+      {/* Info Section */}
+      <div className="info-section">
+        <h2>✨ What can you do here?</h2>
+        <ul>
+          <li>✔ Generate promo content for your brand</li>
+          <li>✔ Upload business data and get insights</li>
+          <li>✔ Manage your products and inventory</li>
+          <li>✔ Track your sales & performance</li>
+          <li>✔ Chat with an intelligent AI assistant</li>
+        </ul>
       </div>
     </div>
   );
-}
+};
+
+export default Dashboard;

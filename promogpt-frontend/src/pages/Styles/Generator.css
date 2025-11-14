@@ -1,0 +1,33 @@
+.generator-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.generator-input {
+  width: 100%;
+  min-height: 140px;
+  padding: 14px;
+  margin-top: 12px;
+  font-size: 15px;
+}
+
+.generator-btn {
+  margin-top: 12px;
+  padding: 12px 20px;
+  background: #6d28d9;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.generator-output {
+  margin-top: 20px;
+  padding: 15px;
+  background: #fff;
+  border-radius: 6px;
+  min-height: 120px;
+  white-space: pre-wrap;
+  font-size: 15px;
+  border: 1px solid #eee;
+}

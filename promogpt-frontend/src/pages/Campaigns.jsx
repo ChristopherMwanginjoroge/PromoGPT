@@ -1,4 +1,16 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+export default function DashboardHome() {
+  const nav = useNavigate();
+
+  return (
+    <button onClick={() => nav("/dashboard/products")}>
+      Products
+    </button>
+  );
+}
+
 
 export default function Campaigns(){
   const [campaigns] = useState([

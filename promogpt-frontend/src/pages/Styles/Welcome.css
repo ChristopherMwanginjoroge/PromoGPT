@@ -1,0 +1,38 @@
+.welcome-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: #fdfcff;
+}
+
+.welcome-box {
+  text-align: center;
+}
+
+.btn-primary {
+  background: #6d28d9;
+  padding: 12px 22px;
+  border-radius: 6px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.btn-secondary {
+  background: #d97706;
+  padding: 12px 22px;
+  border-radius: 6px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.demo-link {
+  margin-top: 20px;
+  color: #6d28d9;
+  cursor: pointer;
+  font-weight: 600;
+}

@@ -1,21 +1,39 @@
 import React from "react";
+import { useLocation, Link } from "react-router-dom";
 
-export default function Navbar(){
+const Navbar = () => {
+  const location = useLocation();
+
+  const pageTitles = {
+    "/": "Login",
+    "/login": "Login",
+    "/register": "Create Account",
+    "/demo": "Demo Mode",
+    "/dashboard": "Dashboard",
+    "/ledger": "Financial Ledger",
+    "/products": "Product Management",
+    "/intelligence": "AI Intelligence",
+    "/profile": "Your Profile",
+    "/settings": "Settings",
+  };
+
+  const title = pageTitles[location.pathname] || "PromoGPT";
+
   return (
     <header className="navbar">
-      <div className="brand">
-        <div className="mark" aria-hidden>PG</div>
-        <div>
-          <div className="title">PromoGPT</div>
-          <div style={{fontSize:12, color:'var(--muted)'}}>AI promos for your business</div>
-        </div>
-      </div>
+      <h1 className="navbar-title">{title}</h1>
 
-      <div className="nav-actions">
-        <button className="btn-outline">New campaign</button>
-        <button className="btn">Create post</button>
+      <div className="navbar-right">
+        <Link to="/profile" className="navbar-profile">
+          <img
+            src="https://ui-avatars.com/api/?name=User"
+            alt="User Avatar"
+            className="avatar"
+          />
+        </Link>
       </div>
     </header>
   );
-}
+};
 
+export default Navbar;

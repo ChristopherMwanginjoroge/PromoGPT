@@ -1,0 +1,83 @@
+.welcome-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 100vh;
+  padding: 4rem;
+  background: linear-gradient(135deg, #3b0764, #6d28d9);
+  color: white;
+}
+
+.welcome-left {
+  width: 50%;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.welcome-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+
+.welcome-title span {
+  color: gold;
+}
+
+.welcome-subtitle {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.welcome-buttons button {
+  margin-right: 1rem;
+  margin-top: 1rem;
+}
+
+.btn-primary {
+  background: gold;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  color: #3b0764;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  color: #3b0764;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-outline {
+  background: transparent;
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: 2px solid white;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.welcome-right {
+  width: 45%;
+  text-align: center;
+}
+
+.welcome-img {
+  width: 90%;
+  filter: drop-shadow(0px 6px 25px rgba(0,0,0,0.4));
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
