@@ -1,6 +1,8 @@
+import api from "../api";
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Dashboard.css";
+
 
 const Dashboard = () => {
   return (
@@ -44,6 +46,27 @@ const Dashboard = () => {
           <p>Explore a fully populated AI dashboard example.</p>
         </Link>
       </div>
+        <button
+  onClick={async () => {
+    try {
+      const res = await api.get("/ping/");
+      alert("Backend says: " + res.data.message);
+    } catch (e) {
+      alert("Backend connection failed");
+      console.log(e);
+    }
+  }}
+  style={{
+    padding: "10px 20px",
+    background: "purple",
+    color: "white",
+    borderRadius: "8px",
+    border: "none",
+    marginBottom: "20px"
+  }}
+>
+  Test Backend
+</button>
 
       {/* Info Section */}
       <div className="info-section">
