@@ -1,39 +1,57 @@
+// src/components/Navbar.jsx
 import React from "react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
-const Navbar = () => {
+export default function Navbar() {
   const location = useLocation();
-
-  const pageTitles = {
-    "/": "Login",
-    "/login": "Login",
-    "/register": "Create Account",
-    "/demo": "Demo Mode",
-    "/dashboard": "Dashboard",
-    "/ledger": "Financial Ledger",
-    "/products": "Product Management",
-    "/intelligence": "AI Intelligence",
-    "/profile": "Your Profile",
-    "/settings": "Settings",
-  };
-
-  const title = pageTitles[location.pathname] || "PromoGPT";
+  const onDashboard = location.pathname === "/dashboard" || location.pathname === "/";
 
   return (
-    <header className="navbar">
-      <h1 className="navbar-title">{title}</h1>
+    <header
+      className="navbar"
+      style={{
+        height: "64px",
+        display: "flex",
+        alignItems: "center",
+        padding: "0 18px",
+        boxSizing: "border-box",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 50,
+        background: onDashboard ? "transparent" : "var(--purple-dark)",
+        color: "white",
+        borderBottom: onDashboard ? "none" : "1px solid rgba(255,255,255,0.04)",
+        backdropFilter: onDashboard ? "none" : "saturate(120%) blur(6px)"
+      }}
+    >
+      {/* Only icon on Dashboard */}
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div style={{
+          width: 40, height: 40, borderRadius: 10, background: "linear-gradient(90deg,var(--purple-mid),var(--purple-light))",
+          display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, color: "#fff"
+        }}>
+          PG
+        </div>
 
-      <div className="navbar-right">
-        <Link to="/profile" className="navbar-profile">
-          <img
-            src="https://ui-avatars.com/api/?name=User"
-            alt="User Avatar"
-            className="avatar"
-          />
-        </Link>
+        {!onDashboard && (
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <div style={{ fontWeight: 700, fontSize: 16 }}>PromoGPT</div>
+            {/* Add nav links/buttons here when not on Dashboard */}
+          </div>
+        )}
+      </div>
+
+      {/* right side invisible on dashboard */}
+      <div style={{ marginLeft: "auto" }}>
+        {!onDashboard && (
+          <div style={{ display: "flex", gap: 10 }}>
+            <button className="btn btn-outline">Connect</button>
+            <button className="btn btn-primary">Upgrade</button>
+          </div>
+        )}
       </div>
     </header>
   );
-};
-
-export default Navbar;
+}

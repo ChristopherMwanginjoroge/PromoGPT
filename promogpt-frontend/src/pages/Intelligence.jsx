@@ -1,109 +1,100 @@
-import React, { useEffect, useState } from "react";
-import api from "../api";
-import "../index.css";
+// src/pages/Intelligence.jsx
+import React, { useState } from "react";
 
-export default function Intelligence(){
-  const [convos, setConvos] = useState([]); // {id,title,last}
-  const [activeId, setActiveId] = useState(null);
-  const [messages, setMessages] = useState([]); // messages of active convo
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
+const MOCK_CONVO = [
+  { from: "assistant", text: "Hi Sarah — I analysed your sales. Your weekend revenue increased by 18% this month." },
+  { from: "user", text: "That's great. Which product performed best?" },
+  { from: "assistant", text: "Velvet Slip Dress contributed 26% of revenue; consider restocking sizes M & L." },
+  { from: "user", text: "Can you create a 7-day campaign idea for that product?" },
+  { from: "assistant", text: "Yes. Day 1: Teaser (story), Day 2: influencer post, Day 3: discount bundle, ... I'll draft captions." },
+];
 
-  useEffect(()=>{
-    // load conversation list (demo fallback)
-    const loadList = async () => {
-      try {
-        const res = await api.get('/ai/conversations/');
-        setConvos(Array.isArray(res.data) ? res.data : (res.data?.items || []));
-      } catch (err) {
-        setConvos([
-          { id: 'demo-1', title: 'Marketing Plan', last: 'You: How to sell more candles?' },
-          { id: 'demo-2', title: 'Launch Campaign', last: 'You: Prepare a 3-step plan' }
-        ]);
-      }
-    };
-    loadList();
-  },[]);
+export default function Intelligence() {
+  const [messages, setMessages] = useState(MOCK_CONVO);
+  const [input, setInput] = useState("");
 
-  useEffect(()=>{
-    // load messages of active convo (demo)
-    if (!activeId) return;
-    const loadMessages = async () => {
-      try {
-        const res = await api.get(`/ai/conversations/${activeId}/messages/`);
-        setMessages(Array.isArray(res.data) ? res.data : (res.data?.messages || []));
-      } catch (err) {
-        // demo sample
-        setMessages([
-          { from: 'assistant', text: `Hi — how can I help you today?` },
-        ]);
-      }
-    };
-    loadMessages();
-  }, [activeId]);
-
-  const send = async () => {
+  const send = () => {
     if (!input.trim()) return;
-    const msg = { from: 'user', text: input };
-    setMessages(prev => [...prev, msg]);
-    setInput('');
-    setLoading(true);
+    setMessages(prev => [...prev, { from: "user", text: input }]);
+    setInput("");
+    setTimeout(() => setMessages(prev => [...prev, { from: "assistant", text: "Got it — drafting ideas now..." }]), 700);
+  };
 
-    try {
-      const res = await api.post(`/ai/conversations/${activeId || 'new'}/send/`, { text: msg.text });
-      // assume backend returns assistant reply
-      const reply = res.data.reply || res.data.text || "No reply";
-      setMessages(prev => [...prev, { from: 'assistant', text: reply }]);
-    } catch (err) {
-      console.error('send failed', err);
-      setMessages(prev => [...prev, { from: 'assistant', text: 'Failed to get response. Try again.' }]);
-    } finally {
-      setLoading(false);
-    }
+  const handleUpload = (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return alert("No file selected (mock)");
+    alert(`Uploaded ${f.name} (mock). Data will be synced.`);
   };
 
   return (
-    <div className="container" style={{display:'flex', gap:12}}>
-      <aside style={{width:280}}>
-        <div className="card">
-          <h3 className="small">Conversations</h3>
-          <div style={{marginTop:8}}>
-            {convos.map(c => (
-              <div key={c.id} className="card" style={{marginBottom:8, cursor:'pointer'}} onClick={()=>setActiveId(c.id)}>
-                <div style={{fontWeight:700}}>{c.title}</div>
-                <div className="text-muted" style={{fontSize:13}}>{c.last}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </aside>
-
-      <div style={{flex:1}}>
-        <div className="card" style={{display:'flex', flexDirection:'column', height:'70vh'}}>
-          <div style={{flex:1, overflowY:'auto', padding:12}}>
-            {messages.length === 0 ? <div className="text-muted">Select a conversation or start a new message</div> :
-              messages.map((m,i)=>(
-                <div key={i} style={{marginBottom:10, textAlign: m.from==='user' ? 'right' : 'left'}}>
-                  <div style={{
-                    display:'inline-block',
-                    background: m.from==='user' ? 'linear-gradient(90deg,#6D28D9,#5B21B6)' : '#f2f2f5',
-                    color: m.from==='user' ? '#fff' : '#111',
-                    padding:'8px 12px',
-                    borderRadius: 12,
-                    maxWidth:'80%'
-                  }}>{m.text}</div>
-                </div>
-              ))
-            }
-          </div>
-
-          <div style={{padding:12, borderTop:'1px solid #eee'}}>
-            <div style={{display:'flex', gap:8}}>
-              <input className="input" placeholder="Ask the assistant..." value={input} onChange={e=>setInput(e.target.value)} />
-              <button className="btn btn-primary" onClick={send} disabled={loading}>{loading ? '...' : 'Send'}</button>
+    <div style={{ paddingTop: 84, paddingLeft: 26, paddingRight: 26 }}>
+      <div style={{ display: "flex", gap: 14 }}>
+        {/* Left: agent tiles vertical */}
+        <aside style={{ width: 260 }}>
+          <div className="card">
+            <h3 style={{ marginTop: 0 }}>AI Agents</h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 10 }}>
+              <div style={{ padding: 12, borderRadius: 8, background: "linear-gradient(90deg,#3b0764,#7c3aed)", color: "#fff" }}>Business Intelligence</div>
+              <div style={{ padding: 12, borderRadius: 8, background: "linear-gradient(90deg,#5b21b6,#c084fc)", color: "#fff" }}>Content Generator</div>
+              <div style={{ padding: 12, borderRadius: 8, background: "linear-gradient(90deg,#9333ea,#7c3aed)", color: "#fff" }}>Campaign Builder</div>
+              <div style={{ padding: 12, borderRadius: 8, background: "linear-gradient(90deg,#c084fc,#f0abfc)", color: "#111" }}>Ad Creator</div>
             </div>
           </div>
-        </div>
+        </aside>
+
+        {/* Middle: chat */}
+        <main style={{ flex: 1 }}>
+          <div className="card" style={{ padding: 16 }}>
+            <div style={{ marginBottom: 10 }}>
+              <div style={{ fontSize: 18, fontWeight: 700 }}>How can I help you today, Sarah?</div>
+              <div style={{ color: "rgba(0,0,0,0.6)", marginTop: 6 }}>Your AI assistant. Upload sales CSV to get targeted insights.</div>
+            </div>
+
+            <div style={{
+              background: "linear-gradient(180deg,#120022,#240042)",
+              padding: 16,
+              borderRadius: 12,
+              color: "#fff",
+              minHeight: 420,
+              display: "flex",
+              flexDirection: "column"
+            }}>
+              <div style={{ overflowY: "auto", flex: 1, paddingRight: 8 }}>
+                {messages.map((m, i) => (
+                  <div key={i} style={{ marginBottom: 12, display: "flex", justifyContent: m.from === "user" ? "flex-end" : "flex-start" }}>
+                    <div style={{
+                      maxWidth: "72%",
+                      padding: 12,
+                      borderRadius: 12,
+                      background: m.from === "user" ? "linear-gradient(90deg,#2a0055,#5b21b6)" : "linear-gradient(90deg,#c084fc,#e9d8fd)",
+                      color: m.from === "user" ? "#fff" : "#110022"
+                    }}>
+                      {m.text}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ marginTop: 12, display: "flex", gap: 8, alignItems: "center" }}>
+                <input
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  placeholder="Ask something about sales, products or campaigns..."
+                  style={{ flex: 1, padding: 10, borderRadius: 8, border: "none" }}
+                />
+                <button className="btn btn-primary" onClick={send}>Send</button>
+                <label title="Upload CSV" style={{ display: "inline-flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+                  <input type="file" accept=".csv" style={{ display: "none" }} onChange={handleUpload} />
+                  <div style={{ width: 40, height: 40, borderRadius: 8, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    📁
+                  </div>
+                </label>
+
+                <button className="btn btn-outline" onClick={() => alert("Syncing data (mock)...")}>Sync</button>
+              </div>
+            </div>
+          </div>
+        </main>
       </div>
     </div>
   );

@@ -1,51 +1,61 @@
+// src/App.jsx
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
-import DemoPage from "./pages/DemoPage";
-
+// Pages
 import Dashboard from "./pages/Dashboard";
-import Ledger from "./pages/Ledger";
-import BusinessData from "./pages/Business.Data";
-import BusinessDataProducts from "./pages/BusinessDataProducts";
-import BusinessDataSales from "./pages/BusinessDataSales";    
+import ProductData from "./pages/ProductData";
+import SalesData from "./pages/SalesData";
+import BusinessData from "./pages/BusinessData";
 import Intelligence from "./pages/Intelligence";
 import Profile from "./pages/Profile";
-import Settings from "./pages/Settings";
+import Ledger from "./pages/Ledger";
+import NotFound from "./pages/NotFound";
 
-const App = () => {
+export default function App() {
   return (
-    <div className="app-container">
+    <div style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
+      
+      {/* Sidebar (hover only) */}
       <Sidebar />
 
-      <main className="main-section">
+      {/* Body wrapper */}
+      <div style={{ flex: 1, overflowY: "auto", position: "relative" }}>
+        
+        {/* Navbar (dashboard shows icon only) */}
         <Navbar />
 
-        <div className="page-content">
+        {/* PADDING TO PREVENT OVERLAP WITH NAVBAR */}
+        <div style={{ paddingTop: "80px" }}>
           <Routes>
-            <Route path="/" element={<LoginPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/demo" element={<DemoPage />} />
 
-            <Route path="/business-data" element={<BusinessData />} />
-            <Route path="/business-data/products" element={<BusinessDataProducts />} />
-            <Route path="/business-data/sales" element={<BusinessDataSales />} />
-
+            {/* Main pages */}
+            <Route path="/" element={<Dashboard />} />
             <Route path="/dashboard" element={<Dashboard />} />
+
+            {/* Business data */}
+            <Route path="/business-data" element={<BusinessData />} />
+            <Route path="/business-data/products" element={<ProductData />} />
+            <Route path="/business-data/sales" element={<SalesData />} />
+
+            {/* Ledger */}
             <Route path="/ledger" element={<Ledger />} />
-            <Route path="/intelligence" element={<Intelligence />} />
+
+            {/* AI Chat / Generators */}
+            <Route path="/ai" element={<Intelligence />} />
+
+            {/* Profile */}
             <Route path="/profile" element={<Profile />} />
-            <Route path="/settings" element={<Settings />} />
+
+            {/* Fallback */}
+            <Route path="*" element={<NotFound />} />
+
           </Routes>
         </div>
-      </main>
+      </div>
     </div>
   );
-};
-
-export default App;
+}

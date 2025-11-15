@@ -12,10 +12,10 @@ export default function BusinessData() {
         <p className="text-muted">Choose the dataset you want to inspect.</p>
 
         <div style={{ display: "flex", gap: 12, marginTop: 16, flexWrap: "wrap" }}>
-          <button className="btn btn-primary" onClick={() => nav("/business-data/products")}>
+          <button className="btn btn-primary" onClick={() => nav("/BusinessDataProducts")}>
             Product Data
           </button>
-          <button className="btn btn-accent" onClick={() => nav("/business-data/sales")}>
+          <button className="btn btn-accent" onClick={() => nav("/BusinessDataSales")}>
             Sales Data
           </button>
         </div>
